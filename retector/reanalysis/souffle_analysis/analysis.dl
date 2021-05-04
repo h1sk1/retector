@@ -1,0 +1,51 @@
+#include "init.dl"
+
+.decl gasDependent(call: ctxProvider.ElementInContext)
+gasDependent([call, context]) :-
+    callGas(call, gas),
+    gasLeft(gasLeft),
+    ctxProvider.elementInContext(gasLeftCtx, gasLeft, _),
+    ctxProvider.elementInContext(gasCtx, gas, context),
+    dataflow.mayDependOn(gasCtx, gasLeftCtx).
+
+.decl applicableInContext(element: ctxProvider.ElementInContext)
+applicableInContext(callCtx) :-
+    externalCall(call), gasDependent(callCtx),
+    callValue(call, value),
+    ctxProvider.elementInContext(callCtx, call, context),
+    ctxProvider.elementInContext(valueCtx, value, context),
+    !(valueKnown(valueCtx), valueOf(valueCtx, "0")).
+
+.decl violationInContext(element: ctxProvider.ElementInContext, comment: symbol)
+violationInContext(callCtx, "") :-
+    applicableInContext(callCtx),
+    storageMutation(store, _),
+    ctxProvider.elementInContext(callCtx, _, ctx),
+    ctxProvider.elementInContext(storeCtx, store, ctx),
+    programFlow.mustPrecede(callCtx, storeCtx).
+
+.decl violation(element: Element, info: symbol, comment: symbol)
+#ifdef DEBUG
+violation(element, "", STR_JOIN("Violation in context: ", ctxString, "; ", comment)) :-
+    violationInContext([element, ctx], comment), ctxProvider.contextToString(ctx, ctxString).
+#else
+violation(element, "", "") :-
+    violationInContext([element, ctx], comment), ctxProvider.contextToString(ctx, ctxString).
+#endif
+
+.decl info(id: Element, key: symbol, value: symbol)
+
+info(element, "element", element) :-
+    violation(element, _, _).
+
+info(element, "line", line) :-
+    violation(element, _, _), sourceLine(element, line).
+
+info(element, "loc", line) :-
+    violation(element, _, _), sourceInfo(element, "loc", line).
+
+info(element, "contract", contract) :-
+    violation(element, _, _), sourceInfo(element, "contract", contract).
+
+.output violation
+.output info
