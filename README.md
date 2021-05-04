@@ -6,13 +6,13 @@
 
 ## Requirement
 
-### Python (Version) = 3.7
+* Python (Version) = 3.7
 
-### Soufflé (Version) = 1.6.2
+* Soufflé (Version) = 1.6.2
 
-### Solc (Version) >= 0.5.8
+* Solc (Version) >= 0.5.8
 
-### Graphviz
+* Graphviz
 
 ## Install
 
