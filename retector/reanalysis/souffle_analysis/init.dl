@@ -37,6 +37,13 @@ gasLimitedCall(call) :-
 ctxProvider.requestContextForInit(f) :- isConstructor(f), !isInternal(f).
 ctxProvider.requestContextForInit(f) :- externallyCallable(f).
 
+// Build contexts for internal jumps
+ctxProvider.requestContextForCall(fn, t, cc) :-
+	function(f, _),
+	jump(t, _, fn, _),
+	isInFunction(t, f),
+	ctxProvider.contextFor(f, cc).
+
 // Build contexts for (external) message calls
 // Assume recursive calls during external calls
 ctxProvider.requestFallbackContextForCall(fn, t, cc) :-
