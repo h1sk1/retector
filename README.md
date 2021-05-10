@@ -4,15 +4,40 @@
 
 # Installation
 
-## Requirement
+## Requirements
 
 * Python (Version) = 3.7
 
+    You can manage python version with [pyenv](https://github.com/pyenv/pyenv) 
+
 * Soufflé (Version) = 1.6.2
 
-* Solc (Version) >= 0.5.8
+    You can follow instruction in [soufflé website](https://souffle-lang.github.io/install) 
+
+    Or install manually
+
+  1. Get the soufflé deb from github [releases](https://github.com/souffle-lang/souffle/releases)
+        ```
+        sudo dpkg -i <soufflé>
+        ```
+  2. If you are using ubuntu 20, you need to get [libffi6](http://mirrors.kernel.org/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb)
+        ```
+        sudo dpkg -i <libffi6>
+        ```
+  3. Install dependencies
+        ```
+        sudo apt-get --fix-broken install
+        ```
+
+* Solc (Version) >= 0.5.7
+
+    You can manage solc version with [py-solc-x](https://github.com/iamdefinitelyahuman/py-solc-x)
 
 * Graphviz
+
+    ```
+    sudo apt-get install graphviz
+    ```
 
 ## Install
 
